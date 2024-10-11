@@ -29,6 +29,13 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [HttpGet("ViewDetail")]
+        public async Task<IActionResult> ViewDetail(string newsArticleId)
+        {
+            var result = await service.ViewNewsArticleDetail(newsArticleId);
+            if (result.Status == 200) return Ok(result);
+            else return BadRequest(result);
+        }
         [HttpPost("Add")]
         public async Task<IActionResult> Add(short accountId, [FromBody] NewsArticleAdd key)
         {
