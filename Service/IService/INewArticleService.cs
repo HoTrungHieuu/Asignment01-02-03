@@ -17,5 +17,6 @@ namespace Service.IService
         public Task<ServiceResult> AddNewsArticle(short accountId,NewsArticleAdd key);
         public Task<ServiceResult> UpdateNewsArticle(short accountId, NewsArticleUpdate key);
         public Task<ServiceResult> DeteleNewsArticle(int newsArticleId);
+        public Task<ServiceResult> ViewStatistic(DateTime fromDate, DateTime toDate);
     }
 }

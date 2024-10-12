@@ -47,15 +47,8 @@ namespace Repository.Repository
         {
             try
             {
-                var lastCategory = (await GetAllAsync()).Last();
-                short newId = 1;
-                if (lastCategory != null)
-                {
-                    newId = Convert.ToInt16(lastCategory.CategoryId + 1);
-                }
                 Category Category = new()
                 {
-                    CategoryId = newId,
                     CategoryName = key.CategoryName,
                     CategoryDesciption = key.CategoryDesciption,
                     ParentCategoryId = key.ParentCategoryId,

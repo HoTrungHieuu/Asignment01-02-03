@@ -1,5 +1,6 @@
 ﻿using BussinessObject.AddModel;
 using BussinessObject.UpdateModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.IService;
@@ -36,6 +37,15 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("ViewStatistic")]
+        public async Task<IActionResult> ViewStatistic(DateTime fromDate, DateTime toDate)
+        {
+            var result = await service.ViewStatistic(fromDate, toDate);
+            if (result.Status == 200) return Ok(result);
+            else return BadRequest(result);
+        }
+        [Authorize(Roles = "Staf")]
         [HttpPost("Add")]
         public async Task<IActionResult> Add(short accountId, [FromBody] NewsArticleAdd key)
         {
@@ -43,6 +53,7 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [Authorize(Roles = "Staf")]
         [HttpPut("Update")]
         public async Task<IActionResult> Update(short accountId, [FromBody] NewsArticleUpdate key)
         {
@@ -50,6 +61,7 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [Authorize(Roles = "Staf")]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int NewsArticleId)
         {

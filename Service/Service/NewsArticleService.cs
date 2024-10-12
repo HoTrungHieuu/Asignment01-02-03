@@ -153,5 +153,32 @@ namespace Service.Service
                 };
             }
         }
+        public async Task<ServiceResult> ViewStatistic(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                if(fromDate > toDate)
+                    return new ServiceResult
+                    {
+                        Status = 400,
+                        Message = "fromDate < toDate"
+                    };
+                var newsArticles = await NewsArticleRepository.ViewStatisticNewsArticle(fromDate,toDate);
+                return new ServiceResult
+                {
+                    Status = 200,
+                    Message = "Statistic",
+                    Data = newsArticles
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult
+                {
+                    Status = 501,
+                    Message = ex.ToString(),
+                };
+            }
+        }
     }
 }

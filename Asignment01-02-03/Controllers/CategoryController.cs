@@ -1,5 +1,6 @@
 ﻿using BussinessObject.AddModel;
 using BussinessObject.UpdateModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.IService;
@@ -22,6 +23,7 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [Authorize(Roles = "Staf")]
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] CategoryAdd key)
         {
@@ -29,6 +31,7 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [Authorize(Roles = "Staf")]
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] CategoryUpdate key)
         {
@@ -36,6 +39,7 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [Authorize(Roles = "Staf")]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int CategoryId)
         {

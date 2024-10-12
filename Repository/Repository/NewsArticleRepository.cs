@@ -135,6 +135,16 @@ namespace Repository.Repository
                 throw;
             }
         }
+        public async Task<List<NewsArticleView>> ViewStatisticNewsArticle(DateTime fromDate, DateTime toDate)
+        {
+            var listNewsArticle = await GetAllAsync();
+            listNewsArticle = listNewsArticle.FindAll(l => l.CreatedDate >= fromDate && l.CreatedDate <= toDate);
+            listNewsArticle.OrderBy(l => l.CreatedDate);
+            List<NewsArticleView> results = new List<NewsArticleView>();
+            results = await ConvertListNewsArticleToListNewsArticleView(listNewsArticle);
+            return results;
+        }
+
         private async Task<List<NewsArticleView>> ConvertListNewsArticleToListNewsArticleView(List<NewsArticle> listNewsArticle)
         {
             List<NewsArticleView> results = new();
