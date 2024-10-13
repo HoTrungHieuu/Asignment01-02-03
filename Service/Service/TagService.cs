@@ -41,6 +41,27 @@ namespace Service.Service
                 };
             }
         }
+        public async Task<ServiceResult> ViewTagDetail(short tagId)
+        {
+            try
+            {
+                var tag = await tagRepository.ViewTagDetail(tagId);
+                return new ServiceResult
+                {
+                    Status = 200,
+                    Message = "Tags",
+                    Data = tag
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult
+                {
+                    Status = 501,
+                    Message = ex.ToString(),
+                };
+            }
+        }
         public async Task<ServiceResult> AddTag(TagAdd key)
         {
             try

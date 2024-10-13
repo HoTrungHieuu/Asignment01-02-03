@@ -12,6 +12,7 @@ namespace Service.IService
     public interface ICategoryService
     {
         public Task<ServiceResult> ViewAllCategory();
+        public Task<ServiceResult> ViewCategoryDetail(short categoryId);
         public Task<ServiceResult> AddCategory(CategoryAdd key);
         public Task<ServiceResult> UpdateCategory(CategoryUpdate key);
         public Task<ServiceResult> DeteleCategory(int CategoryId);

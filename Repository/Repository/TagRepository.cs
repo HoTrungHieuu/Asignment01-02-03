@@ -42,6 +42,20 @@ namespace Repository.Repository
                 throw;
             }
         }
+        public async Task<TagView> ViewTagDetail(short tagId)
+        {
+            try
+            {
+                var tag = GetById((int)tagId);
+                TagView result = new();
+                result.ConvertTagToTagView(tag);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<TagView> AddTag(TagAdd key)
         {
             try

@@ -39,6 +39,27 @@ namespace Service.Service
                 };
             }
         }
+        public async Task<ServiceResult> ViewCategoryDetail(short categoryId)
+        {
+            try
+            {
+                var category = await CategoryRepository.GetCategoryDetail(categoryId);
+                return new ServiceResult
+                {
+                    Status = 200,
+                    Message = "Category",
+                    Data = category
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult
+                {
+                    Status = 501,
+                    Message = ex.ToString(),
+                };
+            }
+        }
         public async Task<ServiceResult> AddCategory(CategoryAdd key)
         {
             try

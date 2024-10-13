@@ -14,6 +14,7 @@ namespace Repository.IRepository
     {
         public Task<List<CategoryView>> ViewAllCategory();
         public Task<List<CategoryView>> GetListCategorySearchPaging(string name, int sizePaging, int indexPaging);
+        public Task<CategoryView> GetCategoryDetail(short categoryId);
         public Task<CategoryView> AddCategory(CategoryAdd key);
         public Task<CategoryView?> UpdateCategory(CategoryUpdate key);
     }

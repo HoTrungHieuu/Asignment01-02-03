@@ -14,6 +14,7 @@ namespace Repository.IRepository
     {
         public Task<List<TagView>> ViewAllTag();
         public Task<List<TagView>> GetListTagSearchPaging(string name, int sizePaging, int indexPaging);
+        public Task<TagView> ViewTagDetail(short tagId);
         public Task<TagView> AddTag(TagAdd key);
         public Task<TagView?> UpdateTag(TagUpdate key);
         public List<TagView> ConvertListTagToListTagView(List<Tag> listTag);
