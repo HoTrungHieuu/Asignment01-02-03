@@ -14,11 +14,6 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="NewsArticle.NewsArticleId" class="control-label"></label>
-                <input asp-for="NewsArticle.NewsArticleId" class="form-control" />
-                <span asp-validation-for="NewsArticle.NewsArticleId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="NewsArticle.NewsTitle" class="control-label"></label>
                 <input asp-for="NewsArticle.NewsTitle" class="form-control" />
                 <span asp-validation-for="NewsArticle.NewsTitle" class="text-danger"></span>
@@ -27,11 +22,6 @@
                 <label asp-for="NewsArticle.Headline" class="control-label"></label>
                 <input asp-for="NewsArticle.Headline" class="form-control" />
                 <span asp-validation-for="NewsArticle.Headline" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewsArticle.CreatedDate" class="control-label"></label>
-                <input asp-for="NewsArticle.CreatedDate" class="form-control" />
-                <span asp-validation-for="NewsArticle.CreatedDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="NewsArticle.NewsContent" class="control-label"></label>
@@ -44,27 +34,14 @@
                 <span asp-validation-for="NewsArticle.NewsSource" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NewsArticle.CategoryId" class="control-label"></label>
-                <select asp-for="NewsArticle.CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+                <label asp-for="NewsArticle.NewsSource" class="control-label"></label>
+                <input asp-for="NewsArticle.NewsSource" class="form-control" />
+                <span asp-validation-for="NewsArticle.NewsSource" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NewsArticle.NewsStatus" class="control-label"></label>
-                <input asp-for="NewsArticle.NewsStatus" class="form-control" />
-                <span asp-validation-for="NewsArticle.NewsStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewsArticle.CreatedById" class="control-label"></label>
-                <select asp-for="NewsArticle.CreatedById" class ="form-control" asp-items="ViewBag.CreatedById"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewsArticle.UpdatedById" class="control-label"></label>
-                <input asp-for="NewsArticle.UpdatedById" class="form-control" />
-                <span asp-validation-for="NewsArticle.UpdatedById" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewsArticle.ModifiedDate" class="control-label"></label>
-                <input asp-for="NewsArticle.ModifiedDate" class="form-control" />
-                <span asp-validation-for="NewsArticle.ModifiedDate" class="text-danger"></span>
+                <label asp-for="NewsArticle.NewsSource" class="control-label"></label>
+                <input asp-for="NewsArticle.NewsSource" class="form-control" />
+                <span asp-validation-for="NewsArticle.NewsSource" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

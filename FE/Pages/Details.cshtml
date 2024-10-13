@@ -18,6 +18,12 @@
             @Html.DisplayFor(model => model.NewsArticle.NewsTitle)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NewsArticle.Category)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NewsArticle.Category.CategoryName)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.NewsArticle.Headline)
         </dt>
         <dd class="col-sm-10">
@@ -60,16 +66,10 @@
             @Html.DisplayFor(model => model.NewsArticle.ModifiedDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NewsArticle.Category)
+            @Html.DisplayNameFor(model => model.NewsArticle.ListTags)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NewsArticle.Category.CategoryDesciption)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NewsArticle.CreatedById)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NewsArticle.CreatedById.HasValue)
+            @Html.DisplayFor(model => model.NewsArticle.CreatedById)
         </dd>
     </dl>
 </div>
