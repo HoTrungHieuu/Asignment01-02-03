@@ -1,4 +1,5 @@
-﻿using BussinessObject.ViewModel;
+﻿using BussinessObject.UpdateModel;
+using BussinessObject.ViewModel;
 using DataAccessObject.Extra;
 using DataAccessObject.Models;
 using Repository.IRepository;
@@ -50,6 +51,22 @@ namespace Repository.Repository
                     AccountPassword = password,
                     AccountRole = role
                 };
+                return account;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<SystemAccount> UpdateAccount(AccountUpdate key)
+        {
+            try
+            {
+                var account = (await GetAllAsync()).SingleOrDefault(l => l.AccountId == key.Id);
+                if (account != null) return null;
+                account.AccountName = key.AccountName;
+                account.AccountPassword = key.Password;
+                await UpdateAsync(account);
                 return account;
             }
             catch (Exception)

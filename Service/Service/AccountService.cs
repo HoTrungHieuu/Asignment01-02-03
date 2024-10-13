@@ -1,4 +1,5 @@
-﻿using DataAccessObject.Models;
+﻿using BussinessObject.UpdateModel;
+using DataAccessObject.Models;
 using Repository.IRepository;
 using Repository.Repository;
 using Service.IService;
@@ -92,6 +93,35 @@ namespace Service.Service
                 {
                     Status = 200,
                     Message = "Create Success",
+                    Data = account
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult
+                {
+                    Status = 501,
+                    Message = ex.ToString(),
+                };
+            }
+        }
+        public async Task<ServiceResult> UpdateAccount(AccountUpdate key)
+        {
+            try
+            {
+                var account = await accountRepository.UpdateAccount(key);
+                if (account == null)
+                {
+                    return new ServiceResult
+                    {
+                        Status = 404,
+                        Message = "Account Not Found",
+                    };
+                }
+                return new ServiceResult
+                {
+                    Status = 200,
+                    Message = "Update Success",
                     Data = account
                 };
             }

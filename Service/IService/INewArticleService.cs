@@ -14,8 +14,8 @@ namespace Service.IService
         public Task<ServiceResult> ViewAllNewsArticle();
         public Task<ServiceResult> ViewAllNewsArticleSearchPaging(string name, int sizePaging, int indexPaging);
         public Task<ServiceResult> ViewNewsArticleDetail(string newsArticleId);
-        public Task<ServiceResult> AddNewsArticle(short accountId,NewsArticleAdd key);
-        public Task<ServiceResult> UpdateNewsArticle(short accountId, NewsArticleUpdate key);
+        public Task<ServiceResult> AddNewsArticle(NewsArticleAdd key);
+        public Task<ServiceResult> UpdateNewsArticle(NewsArticleUpdate key);
         public Task<ServiceResult> DeteleNewsArticle(string newsArticleId);
         public Task<ServiceResult> ViewStatistic(DateTime fromDate, DateTime toDate);
     }

@@ -14,8 +14,8 @@ namespace Repository.IRepository
     {
         public Task<List<NewsArticleView>> ViewAllNewsArticle();
         public Task<List<NewsArticleView>> GetListNewsArticleSearchPaging(string name, int sizePaging, int indexPaging);
-        public Task<NewsArticleView> AddNewsArticle(short accountId, NewsArticleAdd key);
-        public Task<NewsArticleView?> UpdateNewsArticle(short accountId, NewsArticleUpdate key);
+        public Task<NewsArticleView> AddNewsArticle(NewsArticleAdd key);
+        public Task<NewsArticleView?> UpdateNewsArticle(NewsArticleUpdate key);
         public Task<List<NewsArticleView>> ViewStatisticNewsArticle(DateTime fromDate, DateTime toDate);
     }
 }

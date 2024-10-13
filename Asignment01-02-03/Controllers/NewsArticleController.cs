@@ -47,17 +47,17 @@ namespace Asignment01_02_03.Controllers
         }
         [Authorize(Roles = "Staf")]
         [HttpPost("Add")]
-        public async Task<IActionResult> Add(short accountId, [FromBody] NewsArticleAdd key)
+        public async Task<IActionResult> Add([FromBody] NewsArticleAdd key)
         {
-            var result = await service.AddNewsArticle(accountId, key);
+            var result = await service.AddNewsArticle(key);
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
         [Authorize(Roles = "Staf")]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(short accountId, [FromBody] NewsArticleUpdate key)
+        public async Task<IActionResult> Update([FromBody] NewsArticleUpdate key)
         {
-            var result = await service.UpdateNewsArticle(accountId, key);
+            var result = await service.UpdateNewsArticle(key);
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }

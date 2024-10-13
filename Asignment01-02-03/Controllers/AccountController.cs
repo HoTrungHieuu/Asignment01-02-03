@@ -1,4 +1,5 @@
-﻿using DataAccessObject.Models;
+﻿using BussinessObject.UpdateModel;
+using DataAccessObject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +65,7 @@ namespace Asignment01_02_03.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        [HttpGet("Register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(string email, string password)
         {
             var result = await service.Register(email, password);
@@ -75,10 +76,21 @@ namespace Asignment01_02_03.Controllers
             else return BadRequest(result);
         }
         [Authorize(Roles = "Admin")]
-        [HttpGet("Create")]
+        [HttpPost("Create")]
         public async Task<IActionResult> Create(string email, string password, int role)
         {
             var result = await service.CreateAccount(email, password,role);
+            if (result.Status == 200)
+            {
+                return Ok(result);
+            }
+            else return BadRequest(result);
+        }
+        [Authorize(Roles = "Staf")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(AccountUpdate key)
+        {
+            var result = await service.UpdateAccount(key);
             if (result.Status == 200)
             {
                 return Ok(result);

@@ -1,4 +1,5 @@
-﻿using DataAccessObject.Models;
+﻿using BussinessObject.UpdateModel;
+using DataAccessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Repository.IRepository
     {
         public Task<SystemAccount?> Login(string email, string password);
         public Task<SystemAccount> CreateAccount(string email, string password, int role);
+        public Task<SystemAccount> UpdateAccount(AccountUpdate key);
     }
 }

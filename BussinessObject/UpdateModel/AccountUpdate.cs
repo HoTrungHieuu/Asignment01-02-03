@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BussinessObject.AddModel
+namespace BussinessObject.UpdateModel
 {
-    public class CategoryAdd
+    public class AccountUpdate
     {
         [Required]
-        public string? CategoryName { get; set; }
+        public short Id { get; set; }
         [Required]
-        public string? CategoryDesciption { get; set; }
+        public string? AccountName { get; set; }
         [Required]
-        public short? ParentCategoryId { get; set; }
+        public string? Password { get; set; }
     }
 }

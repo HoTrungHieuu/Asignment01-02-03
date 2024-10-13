@@ -81,11 +81,11 @@ namespace Service.Service
                 };
             }
         }
-        public async Task<ServiceResult> AddNewsArticle(short accountId,NewsArticleAdd key)
+        public async Task<ServiceResult> AddNewsArticle(NewsArticleAdd key)
         {
             try
             {
-                var NewsArticle = await NewsArticleRepository.AddNewsArticle(accountId, key);
+                var NewsArticle = await NewsArticleRepository.AddNewsArticle(key);
                 return new ServiceResult
                 {
                     Status = 200,
@@ -102,11 +102,11 @@ namespace Service.Service
                 };
             }
         }
-        public async Task<ServiceResult> UpdateNewsArticle(short accountId, NewsArticleUpdate key)
+        public async Task<ServiceResult> UpdateNewsArticle(NewsArticleUpdate key)
         {
             try
             {
-                var NewsArticle = await NewsArticleRepository.UpdateNewsArticle(accountId, key);
+                var NewsArticle = await NewsArticleRepository.UpdateNewsArticle(key);
                 return new ServiceResult
                 {
                     Status = 200,

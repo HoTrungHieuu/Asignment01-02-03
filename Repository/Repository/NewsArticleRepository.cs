@@ -55,7 +55,7 @@ namespace Repository.Repository
                 throw;
             }
         }
-        public async Task<NewsArticleView> AddNewsArticle(short accountId, NewsArticleAdd key)
+        public async Task<NewsArticleView> AddNewsArticle(NewsArticleAdd key)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Repository.Repository
                     NewsSource = key.NewsSource,
                     CategoryId = key.CategoryId,
                     NewsStatus = true,
-                    CreatedById = accountId,
+                    CreatedById = key.AccountId,
                 };
                 await CreateAsync(newsArticle);
                 foreach(var item in key.ListTagId)
@@ -95,7 +95,7 @@ namespace Repository.Repository
                 throw;
             }
         }
-        public async Task<NewsArticleView?> UpdateNewsArticle(short accountId,NewsArticleUpdate key)
+        public async Task<NewsArticleView?> UpdateNewsArticle(NewsArticleUpdate key)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Repository.Repository
                 newsArticle.NewsSource = key.NewsSource;
                 newsArticle.CategoryId = key.CategoryId;
                 newsArticle.NewsStatus = key.NewsStatus;
-                newsArticle.UpdatedById = accountId;
+                newsArticle.UpdatedById = key.AccountId;
                 newsArticle.ModifiedDate = DateTime.Now;
                 await UpdateAsync(newsArticle);
                 var listNewsTag = (await newsTagRepo.GetAllAsync()).FindAll(l=>l.NewsArticleId == newsArticle.NewsArticleId);
