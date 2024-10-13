@@ -1,5 +1,6 @@
 ﻿using BussinessObject.AddModel;
 using BussinessObject.UpdateModel;
+using DataAccessObject.Models;
 using Repository.IRepository;
 using Repository.Repository;
 using Service.IService;
