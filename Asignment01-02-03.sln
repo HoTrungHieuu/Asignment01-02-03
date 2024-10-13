@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asignment01-02-03Odata", "Asignment01-02-03Odata\Asignment01-02-03Odata.csproj", "{D270898E-FAA8-4163-96CF-C2F1E9BB1600}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FE", "FE\FE.csproj", "{71D990B5-C4C3-40AD-803B-3789DA760DCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FE", "FE\FE.csproj", "{71D990B5-C4C3-40AD-803B-3789DA760DCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

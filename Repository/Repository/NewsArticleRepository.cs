@@ -164,7 +164,14 @@ namespace Repository.Repository
             }
             List<TagView> listTagView = tagRepo.ConvertListTagToListTagView(listTag);
             CategoryView categoryView = new CategoryView();
-            categoryView.ConvertCategoryToCategoryView(cateRepo.GetById(newsArticle.CategoryId));
+            if(newsArticle.CategoryId != null)
+            {
+                categoryView.ConvertCategoryToCategoryView(cateRepo.GetById(newsArticle.CategoryId));
+            }
+            else
+            {
+                categoryView = null;
+            }
             NewsArticleView result = new();
             result.ConvertNewsArticleToNewsArticleView(newsArticle,categoryView,listTagView);
             return result;

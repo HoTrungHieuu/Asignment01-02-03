@@ -48,7 +48,7 @@ namespace Asignment01_02_03.Controllers
         }
         //[Authorize(Roles = "Staf")]
         [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete(short CategoryId)
+        public async Task<IActionResult> Delete(int CategoryId)
         {
             var result = await service.DeteleCategory(CategoryId);
             if (result.Status == 200) return Ok(result);

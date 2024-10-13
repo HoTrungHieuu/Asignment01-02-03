@@ -119,7 +119,7 @@ namespace Repository.Repository
         public T GetById(short? id)
         {
             if (id == null) return null;
-            return _dbSet.Find((int)id);
+            return _dbSet.Find(id);
         }
         public async Task<T> GetByIdAsync(int id)
         {
