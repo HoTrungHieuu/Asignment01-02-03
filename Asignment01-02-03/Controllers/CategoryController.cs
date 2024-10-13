@@ -30,7 +30,7 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
-        [Authorize(Roles = "Staf")]
+        //[Authorize(Roles = "Staf")]
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] CategoryAdd key)
         {
@@ -46,9 +46,9 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
-        [Authorize(Roles = "Staf")]
+        //[Authorize(Roles = "Staf")]
         [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete(int CategoryId)
+        public async Task<IActionResult> Delete(short CategoryId)
         {
             var result = await service.DeteleCategory(CategoryId);
             if (result.Status == 200) return Ok(result);

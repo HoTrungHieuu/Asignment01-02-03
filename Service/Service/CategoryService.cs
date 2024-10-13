@@ -102,7 +102,7 @@ namespace Service.Service
                 };
             }
         }
-        public async Task<ServiceResult> DeteleCategory(int CategoryId)
+        public async Task<ServiceResult> DeteleCategory(short CategoryId)
         {
             try
             {

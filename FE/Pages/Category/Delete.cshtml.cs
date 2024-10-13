@@ -7,57 +7,71 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
 using BussinessObject.ViewModel;
+using Service.Service;
+using System.Text.Json;
 
 namespace FE.Pages.Category
 {
     public class DeleteModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public DeleteModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public DeleteModel(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
 
-        [BindProperty]
         public CategoryView Category { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(short? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
-
-            if (category == null)
+            var response = await _httpClient.GetAsync($"https://localhost:7257/api/Category/ViewDetail?categoryId={id}");
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                if (result != null && result.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    Category = JsonSerializer.Deserialize<CategoryView>(result.Data.ToString(), options);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
             else
             {
-                //Category = ;
-            }
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(short? id)
-        {
-            if (id == null)
-            {
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            /*if (category != null)
+            return Page();
+        }
+        public async Task<IActionResult> OnPostAsync(string id)
+        {
+            if (string.IsNullOrEmpty(id))
             {
-                Category = category;
-                _context.Categories.Remove(Category);
-                await _context.SaveChangesAsync();
-            }*/
-
-            return RedirectToPage("./Index");
+                return NotFound();
+            }
+            short idTemp = short.Parse(id);
+            var response = await _httpClient.DeleteAsync($"https://localhost:7257/api/Category/Delete?categoryId={id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error deleting the news article.");
+                return Page();
+            }
         }
     }
 }

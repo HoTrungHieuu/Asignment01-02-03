@@ -6,12 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
-using BussinessObject.AddModel;
 using BussinessObject.ViewModel;
 using Service.Service;
 using System.Text.Json;
 
-namespace FE.Pages.Category
+namespace FE.Pages.Tag
 {
     public class DetailsModel : PageModel
     {
@@ -22,7 +21,7 @@ namespace FE.Pages.Category
             _httpClient = httpClient;
         }
 
-        public CategoryView Category { get; set; } = default!;
+        public TagView Tag { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -31,7 +30,7 @@ namespace FE.Pages.Category
                 return NotFound();
             }
 
-            var response = await _httpClient.GetAsync($"https://localhost:7257/api/Category/ViewDetail?categoryId={id}");
+            var response = await _httpClient.GetAsync($"https://localhost:7257/api/Tag/ViewDetail?TagId={id}");
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
@@ -42,7 +41,7 @@ namespace FE.Pages.Category
                         PropertyNameCaseInsensitive = true
                     };
 
-                    Category = JsonSerializer.Deserialize<CategoryView>(result.Data.ToString(), options);
+                    Tag = JsonSerializer.Deserialize<TagView>(result.Data.ToString(), options);
                 }
                 else
                 {
