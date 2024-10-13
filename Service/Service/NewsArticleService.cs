@@ -123,7 +123,7 @@ namespace Service.Service
                 };
             }
         }
-        public async Task<ServiceResult> DeteleNewsArticle(int newsArticleId)
+        public async Task<ServiceResult> DeteleNewsArticle(string newsArticleId)
         {
             try
             {

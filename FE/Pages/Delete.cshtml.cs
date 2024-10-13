@@ -6,57 +6,72 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
+using BussinessObject.ViewModel;
+using Service.Service;
+using System.Text.Json;
 
 namespace FE.Pages
 {
     public class DeleteModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public DeleteModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public DeleteModel(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
 
-        [BindProperty]
-        public NewsArticle NewsArticle { get; set; } = default!;
+        public NewsArticleView NewsArticle { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var newsarticle = await _context.NewsArticles.FirstOrDefaultAsync(m => m.NewsArticleId == id);
-
-            if (newsarticle == null)
+            var response = await _httpClient.GetAsync($"https://localhost:7257/api/NewsArticle/ViewDetail?newsArticleId={id}");
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                if (result != null && result.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    NewsArticle = JsonSerializer.Deserialize<NewsArticleView>(result.Data.ToString(), options);
+                }
+                else
+                {
+                    return NotFound(); 
+                }
             }
             else
             {
-                NewsArticle = newsarticle;
+                return NotFound();
             }
+
             return Page();
         }
-
         public async Task<IActionResult> OnPostAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var newsarticle = await _context.NewsArticles.FindAsync(id);
-            if (newsarticle != null)
+            var response = await _httpClient.DeleteAsync($"https://localhost:7257/api/NewsArticle/Delete?NewsArticleId={id}");
+            if (response.IsSuccessStatusCode)
             {
-                NewsArticle = newsarticle;
-                _context.NewsArticles.Remove(NewsArticle);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index"); 
             }
-
-            return RedirectToPage("./Index");
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error deleting the news article.");
+                return Page();
+            }
         }
     }
 }

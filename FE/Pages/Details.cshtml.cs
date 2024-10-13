@@ -18,7 +18,7 @@ namespace FE.Pages
             _httpClient = httpClient;
         }
 
-        public NewsArticleView NewsArticle { get; set; } = default!; // Thay đổi loại cho đúng
+        public NewsArticleView NewsArticle { get; set; } = default!; 
 
         public async Task<IActionResult> OnGetAsync(string id)
         {

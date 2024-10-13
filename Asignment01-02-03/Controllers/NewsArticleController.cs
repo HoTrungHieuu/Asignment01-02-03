@@ -61,9 +61,9 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
-        [Authorize(Roles = "Staf")]
+       // [Authorize(Roles = "Staf")]
         [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete(int NewsArticleId)
+        public async Task<IActionResult> Delete(string NewsArticleId)
         {
             var result = await service.DeteleNewsArticle(NewsArticleId);
             if (result.Status == 200) return Ok(result);

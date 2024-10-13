@@ -1,45 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using DataAccessObject.Models;
+using BussinessObject.ViewModel;
+using System.Text.Json;
+using Service.Service;
+using Microsoft.Extensions.Options;
 
 namespace FE.Pages
 {
     public class CreateModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public CreateModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public CreateModel(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
 
-        public IActionResult OnGet()
-        {
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryDesciption");
-        ViewData["CreatedById"] = new SelectList(_context.SystemAccounts, "AccountId", "AccountId");
-            return Page();
-        }
+        public NewsArticleView NewsArticle { get; set; } = new NewsArticleView();
+        public List<TagView> Tags { get; set; } = new List<TagView>();
+        public List<CategoryView> Categories { get; set; } = new List<CategoryView>();
 
-        [BindProperty]
-        public NewsArticle NewsArticle { get; set; } = default!;
-
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task OnGetAsync()
         {
-            if (!ModelState.IsValid)
+            var response = await _httpClient.GetAsync("https://localhost:7257/api/Tag/ViewAll");
+            if (response.IsSuccessStatusCode)
             {
-                return Page();
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                if (result != null && result.Status == 200)
+                {
+                    var jsonElement = (JsonElement)result.Data;
+
+                    var tags = JsonSerializer.Deserialize<List<TagView>>(jsonElement);
+                }
             }
-
-            _context.NewsArticles.Add(NewsArticle);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
         }
     }
 }

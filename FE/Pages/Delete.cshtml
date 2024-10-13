@@ -61,16 +61,10 @@
             @Html.DisplayFor(model => model.NewsArticle.ModifiedDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NewsArticle.Category)
+            @Html.DisplayNameFor(model => model.NewsArticle.CreatedById)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NewsArticle.Category.CategoryDesciption)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NewsArticle.CreatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NewsArticle.CreatedBy.AccountId)
+            @Html.DisplayFor(model => model.NewsArticle.CreatedById.HasValue)
         </dd>
     </dl>
     
