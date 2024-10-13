@@ -20,4 +20,8 @@
     <ProjectReference Include="..\DataAccessObject\DataAccessObject.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Tag\" />
+  </ItemGroup>
+
 </Project>

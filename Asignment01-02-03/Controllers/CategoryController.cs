@@ -23,7 +23,7 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
-        [Authorize(Roles = "Staf")]
+        //[Authorize(Roles = "Staf")]
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] CategoryAdd key)
         {
