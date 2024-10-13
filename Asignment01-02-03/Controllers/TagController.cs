@@ -23,6 +23,13 @@ namespace Asignment01_02_03.Controllers
             if (result.Status == 200) return Ok(result);
             else return BadRequest(result);
         }
+        [HttpGet("ViewDetail")]
+        public async Task<IActionResult> ViewDetail(short tagId)
+        {
+            var result = await service.ViewTagDetail(tagId);
+            if (result.Status == 200) return Ok(result);
+            else return BadRequest(result);
+        }
         [Authorize(Roles = "Staf")]
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody]TagAdd key)

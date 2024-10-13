@@ -43,6 +43,20 @@ namespace Repository.Repository
                 throw;
             }
         }
+        public async Task<CategoryView> GetCategoryDetail(short categoryId)
+        {
+            try
+            {
+                var category = GetById(categoryId);
+                CategoryView resutl = new();
+                resutl.ConvertCategoryToCategoryView(category);
+                return resutl;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<CategoryView> AddCategory(CategoryAdd key)
         {
             try
