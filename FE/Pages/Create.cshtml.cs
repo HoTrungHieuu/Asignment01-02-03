@@ -72,7 +72,7 @@ namespace FE.Pages
                 await LoadTagsAndCategoriesAsync();
                 return Page();
             }
-            var item = NewsArticle;
+            NewsArticle.AccountId = 1;
             // In dữ liệu để kiểm tra
             var jsonContent = JsonSerializer.Serialize(NewsArticle);
             Console.WriteLine(jsonContent);
