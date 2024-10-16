@@ -9,6 +9,7 @@ using Service.Service;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BussinessObject.ViewModel;
 
 namespace Asignment01_02_03.Controllers
 {
@@ -20,7 +21,7 @@ namespace Asignment01_02_03.Controllers
         public AccountController()
         {
         }
-        [HttpGet("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(string email, string password)
         {
             var result = await service.Login(email,password);
@@ -36,10 +37,10 @@ namespace Asignment01_02_03.Controllers
                     role = "Admin";
                 }
                 var token = GenerateJwtToken(email, role);
-                result.Data = new
+                result.Data = new AccountView
                 {
-                    accountId = ((SystemAccount)result.Data).AccountId,
-                    token = token
+                    AccountId = ((SystemAccount)result.Data).AccountId,
+                    Token = token
                 };
                 return Ok(result);
             }
