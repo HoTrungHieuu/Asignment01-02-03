@@ -48,7 +48,7 @@ namespace Asignment01_02_03.Controllers
         }
         [Authorize(Roles = "Staf")]
         [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete(short tagId)
+        public async Task<IActionResult> Delete(int tagId)
         {
             var result = await service.DeteleTag(tagId);
             if (result.Status == 200) return Ok(result);

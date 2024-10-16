@@ -107,7 +107,7 @@ namespace Service.Service
         {
             try
             {
-                var Category = CategoryRepository.GetById(CategoryId);
+                var Category = CategoryRepository.GetById((short)CategoryId);
                 if (Category == null)
                 {
                     return new ServiceResult

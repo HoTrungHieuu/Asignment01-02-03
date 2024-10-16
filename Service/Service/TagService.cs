@@ -104,7 +104,7 @@ namespace Service.Service
                 };
             }
         }
-        public async Task<ServiceResult> DeteleTag(short tagId)
+        public async Task<ServiceResult> DeteleTag(int tagId)
         {
             try
             {

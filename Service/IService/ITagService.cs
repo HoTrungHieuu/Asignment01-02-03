@@ -14,7 +14,7 @@ namespace Service.IService
         public Task<ServiceResult> ViewAllTag();
         public Task<ServiceResult> AddTag(TagAdd key);
         public Task<ServiceResult> UpdateTag(TagUpdate key);
-        public Task<ServiceResult> DeteleTag(short tagId);
+        public Task<ServiceResult> DeteleTag(int tagId);
         public Task<ServiceResult> ViewTagDetail(short tagId);
     }
 }
