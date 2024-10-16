@@ -10,6 +10,7 @@ using BussinessObject.AddModel;
 using BussinessObject.ViewModel;
 using Service.Service;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 namespace FE.Pages.Category
 {
@@ -31,7 +32,15 @@ namespace FE.Pages.Category
                 return NotFound();
             }
 
+            var token = HttpContext.Session.GetString("Token"); 
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
             var response = await _httpClient.GetAsync($"https://localhost:7257/api/Category/ViewDetail?categoryId={id}");
+
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<ServiceResult>();

@@ -1,21 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NuGet.Protocol.Plugins;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Json; // Ð?ng quên thêm using này ð? s? d?ng PostAsJsonAsync
 using System.Text.Json;
 using Service.Service;
-
+using BussinessObject.ViewModel;
 
 namespace FE.Pages.Auth
 {
     public class LoginModel : PageModel
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LoginModel(HttpClient httpClient)
+        public LoginModel(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7257/"); 
-
+            _httpContextAccessor = httpContextAccessor;
+            _httpClient.BaseAddress = new Uri("https://localhost:7257/");
         }
 
         [BindProperty]
@@ -25,32 +27,45 @@ namespace FE.Pages.Auth
         public string Password { get; set; }
 
         public string ErrorMessage { get; set; }
-
-        public void OnGet()
+        public void OnGetAsync()
         {
-            // X? l? n?u có yêu c?u khi t?i trang
+            _httpContextAccessor.HttpContext.Session.Remove("AccountId");
+            _httpContextAccessor.HttpContext.Session.Remove("Token");
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Ð?nh ngh?a URL cho API Login
             var url = $"api/Account/Login?email={Email}&password={Password}";
 
-            // G?i API
-            var response = await _httpClient.GetAsync(url);
+            var loginData = new
+            {
+                email = Email,
+                password = Password
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(url, loginData);
 
             if (response.IsSuccessStatusCode)
             {
-                // Ð?c ph?n h?i t? API
-                var result = await response.Content.ReadAsStringAsync();
-                var responseObject = JsonSerializer.Deserialize<ServiceResult>(result);
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
 
-                // Ði?u hý?ng ð?n trang chính sau khi ðãng nh?p thành công
-                return RedirectToPage("/Index");
+                AccountView data = JsonSerializer.Deserialize<AccountView>(result.Data.ToString(), options);
+
+                if (data!=null)
+                {
+                    _httpContextAccessor.HttpContext.Session.SetString("AccountId", data.AccountId.ToString());
+                    _httpContextAccessor.HttpContext.Session.SetString("Token", data.Token);
+                }
+
+                return RedirectToPage("/NewArtical");
             }
             else
             {
-                ErrorMessage = "Ðãng nh?p th?t b?i. Vui l?ng ki?m tra l?i thông tin.";
+                ErrorMessage = "Login Fail!";
                 return Page();
             }
         }

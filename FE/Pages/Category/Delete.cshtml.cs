@@ -9,6 +9,7 @@ using DataAccessObject.Models;
 using BussinessObject.ViewModel;
 using Service.Service;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 namespace FE.Pages.Category
 {
@@ -28,6 +29,14 @@ namespace FE.Pages.Category
             if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
+            }
+
+            var token = HttpContext.Session.GetString("Token"); // Thay đổi tùy theo cách bạn lưu trữ token
+
+            // Gắn token vào header
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
             var response = await _httpClient.GetAsync($"https://localhost:7257/api/Category/ViewDetail?categoryId={id}");
@@ -55,12 +64,23 @@ namespace FE.Pages.Category
 
             return Page();
         }
+
         public async Task<IActionResult> OnPostAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
+
+            // Lấy token từ session hoặc một nguồn khác
+            var token = HttpContext.Session.GetString("Token"); // Thay đổi tùy theo cách bạn lưu trữ token
+
+            // Gắn token vào header
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
             short idTemp = short.Parse(id);
             var response = await _httpClient.DeleteAsync($"https://localhost:7257/api/Category/Delete?categoryId={id}");
             if (response.IsSuccessStatusCode)
@@ -69,7 +89,7 @@ namespace FE.Pages.Category
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Error deleting the news article.");
+                ModelState.AddModelError(string.Empty, "Error deleting the category."); // Cập nhật thông báo lỗi
                 return Page();
             }
         }
