@@ -10,6 +10,7 @@ namespace Service.IService
 {
     public interface IAccountService
     {
+        public Task<ServiceResult> AccountDetail(int accountId);
         public Task<ServiceResult> Login(string email, string password);
         public Task<ServiceResult> Register(string email, string password);
         public Task<ServiceResult> CreateAccount(string email, string password, int role);

@@ -55,6 +55,20 @@ namespace Repository.Repository
                 throw;
             }
         }
+        public async Task<NewsArticleView> NewsArticleDetail(string newsArticleId)
+        {
+            try
+            {
+                var newsArticle = GetById(newsArticleId);
+                NewsArticleView result = new();
+                result = (await ConvertNewsArticleToNewsArticleView(newsArticle));
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<NewsArticleView> AddNewsArticle(NewsArticleAdd key)
         {
             try

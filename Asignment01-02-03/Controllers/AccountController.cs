@@ -21,6 +21,16 @@ namespace Asignment01_02_03.Controllers
         public AccountController()
         {
         }
+        [HttpGet("AccountDetail")]
+        public async Task<IActionResult> AccountDetail(int accountId)
+        {
+            var result = await service.AccountDetail(accountId);
+            if (result.Status == 200)
+            {
+                return Ok(result);
+            }
+            else return BadRequest(result);
+        }
         [HttpPost("Login")]
         public async Task<IActionResult> Login(string email, string password)
         {

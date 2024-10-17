@@ -64,7 +64,7 @@ namespace Service.Service
         {
             try
             {
-                var newArticle = NewsArticleRepository.GetById(newsArticleId);
+                var newArticle = NewsArticleRepository.NewsArticleDetail(newsArticleId);
                 return new ServiceResult
                 {
                     Status = 200,

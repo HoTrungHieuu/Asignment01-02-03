@@ -18,6 +18,35 @@ namespace Service.Service
         {
             accountRepository = new AccountRepository();
         }
+        public async Task<ServiceResult> AccountDetail(int accountId)
+        {
+            try
+            {
+                var account = accountRepository.GetById((short)accountId);
+                if (account == null)
+                {
+                    return new ServiceResult
+                    {
+                        Status = 404,
+                        Message = "Not Found",
+                    };
+                }
+                return new ServiceResult
+                {
+                    Status = 200,
+                    Message = "Acdount",
+                    Data = account
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult
+                {
+                    Status = 501,
+                    Message = ex.ToString(),
+                };
+            }
+        }
         public async Task<ServiceResult> Login(string email, string password)
         {
             try
