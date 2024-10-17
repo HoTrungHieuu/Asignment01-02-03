@@ -69,7 +69,19 @@
             @Html.DisplayNameFor(model => model.NewsArticle.ListTags)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NewsArticle.CreatedById)
+            @if (Model.NewsArticle.ListTags != null && Model.NewsArticle.ListTags.Any())
+            {
+                <ul>
+                    @foreach (var tag in Model.NewsArticle.ListTags)
+                    {
+                        <li>@tag.TagName</li> 
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>No tags available</span> 
+            }
         </dd>
     </dl>
 </div>

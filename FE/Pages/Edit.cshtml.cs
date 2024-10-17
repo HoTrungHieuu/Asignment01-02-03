@@ -23,10 +23,12 @@ namespace FE.Pages
         {
             _httpClient = httpClient;
         }
-        public NewsArticleView NewsArticle { get; set; } = default!;
-        public NewsArticleUpdate NewsArticleUpdate { get; set; } = default!;
-         public List<TagView> Tags { get; set; } = new List<TagView>();
-        public List<CategoryView> Categories { get; set; } = new List<CategoryView>();
+
+        public NewsArticleView NewsArticle { get; set; } = new NewsArticleView();
+        public NewsArticleUpdate NewsArticleUpdate { get; set; } = new  NewsArticleUpdate();
+        public List<TagView> AvailableTags { get; set; } = new List<TagView>();
+        public List<CategoryView> AvailableCategories { get; set; } = new List<CategoryView>();
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -34,13 +36,7 @@ namespace FE.Pages
                 return NotFound();
             }
 
-            var token = HttpContext.Session.GetString("Token");
-            if (!string.IsNullOrEmpty(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            // Fetch NewsArticle details
+            // Lấy dữ liệu bài báo
             var response = await _httpClient.GetAsync($"https://localhost:7257/api/NewsArticle/ViewDetail?newsArticleId={id}");
             if (response.IsSuccessStatusCode)
             {
@@ -53,26 +49,6 @@ namespace FE.Pages
                     };
 
                     NewsArticle = JsonSerializer.Deserialize<NewsArticleView>(result.Data.ToString(), options);
-
-                    // Fetch Categories
-                    var categoryResponse = await _httpClient.GetAsync("https://localhost:7257/api/Category/GetAll");
-                    if (categoryResponse.IsSuccessStatusCode)
-                    {
-                        var categories = await categoryResponse.Content.ReadFromJsonAsync<List<CategoryView>>();
-                        Categories = categories ?? new List<CategoryView>();
-
-                        //ViewBag.Category = new SelectList(Categories, "Id", "Name", NewsArticle.Category.CategoryId);
-                    }
-
-                    // Fetch Tags
-                    var tagResponse = await _httpClient.GetAsync("https://localhost:7257/api/Tag/GetAll");
-                    if (tagResponse.IsSuccessStatusCode)
-                    {
-                        var tags = await tagResponse.Content.ReadFromJsonAsync<List<TagView>>();
-                        Tags = tags ?? new List<TagView>();
-
-                        //ViewBag.ListTags = new SelectList(Tags, "Id", "Name", NewsArticle.ListTags);
-                    }
                 }
                 else
                 {
@@ -83,9 +59,107 @@ namespace FE.Pages
             {
                 return NotFound();
             }
+            var tagResponse = await _httpClient.GetAsync("https://localhost:7257/api/Tag/ViewAll");
+            if (tagResponse.IsSuccessStatusCode)
+            {
+                var tagResult = await tagResponse.Content.ReadFromJsonAsync<ServiceResult>();
+                if (tagResult != null && tagResult.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
 
+                    AvailableTags = JsonSerializer.Deserialize<List<TagView>>(tagResult.Data.ToString(), options);
+                }
+            }
+            var categoryResponse = await _httpClient.GetAsync("https://localhost:7257/api/Category/ViewAll");
+            if (categoryResponse.IsSuccessStatusCode)
+            {
+                var categoryResult = await categoryResponse.Content.ReadFromJsonAsync<ServiceResult>();
+                if (categoryResult != null && categoryResult.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    AvailableCategories = JsonSerializer.Deserialize<List<CategoryView>>(categoryResult.Data.ToString(), options);
+                }
+            }
+            return Page();
+        }
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                // Reload available tags and categories in case of validation failure
+                await LoadAvailableData();
+                return Page();
+            }
+
+            // Prepare the update model
+            var selectedTagIds = Request.Form["selectedTags"].ToArray();
+            var selectedTags = selectedTagIds.Select(tagId => new TagView { TagId = int.Parse(tagId) }).ToList();
+            var token = HttpContext.Session.GetString("Token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            List<int> listTagId = new List<int>();
+            foreach (var selectedTagId in selectedTags)
+            {
+                listTagId.Add(selectedTagId.TagId);
+            }
+            NewsArticleUpdate.ListTagId = listTagId;
+
+
+
+             // Send the update request to the API
+             var updateResponse = await _httpClient.PutAsJsonAsync("https://localhost:7257/api/NewsArticle/Update", NewsArticleUpdate);
+
+            if (updateResponse.IsSuccessStatusCode)
+            {
+                // Redirect to a success page or the list page
+                return RedirectToPage("./NewArtical");
+            }
+
+            // If the update failed, reload available data and return the page
+            await LoadAvailableData();
+            ModelState.AddModelError(string.Empty, "An error occurred while updating the news article.");
             return Page();
         }
 
+        private async Task LoadAvailableData()
+        {
+            var tagResponse = await _httpClient.GetAsync("https://localhost:7257/api/Tag/ViewAll");
+            if (tagResponse.IsSuccessStatusCode)
+            {
+                var tagResult = await tagResponse.Content.ReadFromJsonAsync<ServiceResult>();
+                if (tagResult != null && tagResult.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    AvailableTags = JsonSerializer.Deserialize<List<TagView>>(tagResult.Data.ToString(), options);
+                }
+            }
+            var categoryResponse = await _httpClient.GetAsync("https://localhost:7257/api/Category/ViewAll");
+            if (categoryResponse.IsSuccessStatusCode)
+            {
+                var categoryResult = await categoryResponse.Content.ReadFromJsonAsync<ServiceResult>();
+                if (categoryResult != null && categoryResult.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    AvailableCategories = JsonSerializer.Deserialize<List<CategoryView>>(categoryResult.Data.ToString(), options);
+                }
+            }
+        }
     }
 }

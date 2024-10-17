@@ -42,12 +42,12 @@ namespace FE.Pages
                 }
                 else
                 {
-                    return NotFound(); // Nếu không có dữ liệu
+                    return NotFound(); 
                 }
             }
             else
             {
-                return NotFound(); // Nếu API trả về lỗi
+                return NotFound(); 
             }
 
             return Page();

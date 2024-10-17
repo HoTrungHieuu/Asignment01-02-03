@@ -46,11 +46,11 @@ namespace BussinessObject.ViewModel
             NewsSource = key.NewsSource;
             if ((bool)key.NewsStatus)
             {
-                NewsStatus = "IsActive";
+                NewsStatus = "Active";
             }
             else
             {
-                NewsStatus = "NotActive";
+                NewsStatus = "InActive";
             }
             
             CreatedById = key.CreatedById;
