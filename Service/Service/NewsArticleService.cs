@@ -64,7 +64,7 @@ namespace Service.Service
         {
             try
             {
-                var newArticle = NewsArticleRepository.NewsArticleDetail(newsArticleId);
+                var newArticle = await NewsArticleRepository.NewsArticleDetail(newsArticleId);
                 return new ServiceResult
                 {
                     Status = 200,

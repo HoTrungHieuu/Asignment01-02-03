@@ -55,6 +55,7 @@ namespace Repository.Repository
                 throw;
             }
         }
+
         public async Task<NewsArticleView> NewsArticleDetail(string newsArticleId)
         {
             try
