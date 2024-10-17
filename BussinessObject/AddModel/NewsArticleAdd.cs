@@ -20,9 +20,7 @@ namespace BussinessObject.AddModel
         public string? NewsContent { get; set; }
         [Required]
         public string? NewsSource { get; set; }
-        [Required]
         public short? CategoryId { get; set; }
-        [Required]
         public List<int>? ListTagId { get; set; }
     }
 }

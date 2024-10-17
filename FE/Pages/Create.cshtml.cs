@@ -9,6 +9,8 @@ using System.Text.Json;
 using Service.Service;
 using BussinessObject.AddModel;
 using Microsoft.Extensions.Options;
+using DataAccessObject.Models;
+using System.Net.Http.Headers;
 
 namespace FE.Pages
 {
@@ -72,16 +74,21 @@ namespace FE.Pages
                 await LoadTagsAndCategoriesAsync();
                 return Page();
             }
-            NewsArticle.AccountId = 1;
+            var token = HttpContext.Session.GetString("Token");
+            NewsArticle.AccountId = short.Parse(HttpContext.Session.GetString("AccountId"));
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
             // In dữ liệu để kiểm tra
             var jsonContent = JsonSerializer.Serialize(NewsArticle);
             Console.WriteLine(jsonContent);
-
+            if (Tags == null) Tags = new();
             var response = await _httpClient.PostAsJsonAsync("https://localhost:7257/api/NewsArticle/Add", NewsArticle);
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToPage("Index");
+                return RedirectToPage("/NewArtical");
             }
 
             var errorMessage = await response.Content.ReadAsStringAsync();

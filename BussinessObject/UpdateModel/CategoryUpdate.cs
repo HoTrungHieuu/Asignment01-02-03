@@ -16,7 +16,6 @@ namespace BussinessObject.UpdateModel
         [Required]
 
         public string CategoryDesciption { get; set; }
-        [Required]
         public short? ParentCategoryId { get; set; }
         [Required]
         public bool? IsActive { get; set; }

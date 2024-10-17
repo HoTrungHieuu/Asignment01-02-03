@@ -12,7 +12,7 @@ namespace BussinessObject.UpdateModel
         [Required]
         public short AccountId {  get; set; }
         [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string? NewsTitle { get; set; }
         [Required]
@@ -23,9 +23,7 @@ namespace BussinessObject.UpdateModel
         public string? NewsSource { get; set; }
         [Required]
         public bool? NewsStatus { get; set; }
-        [Required]
         public short? CategoryId { get; set; }
-        [Required]
         public List<int>? ListTagId { get; set; }
     }
 }

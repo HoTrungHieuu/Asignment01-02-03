@@ -9,6 +9,7 @@ using DataAccessObject.Models;
 using BussinessObject.ViewModel;
 using Service.Service;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 namespace FE.Pages
 {
@@ -61,11 +62,15 @@ namespace FE.Pages
             {
                 return NotFound();
             }
-
+            var token = HttpContext.Session.GetString("Token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
             var response = await _httpClient.DeleteAsync($"https://localhost:7257/api/NewsArticle/Delete?NewsArticleId={id}");
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToPage("./Index"); 
+                return RedirectToPage("./NewArtical"); 
             }
             else
             {

@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BussinessObject.ViewModel; // Đảm bảo namespace này chính xác
+using BussinessObject.ViewModel; 
 using System.Text.Json;
 using Service.Service;
 

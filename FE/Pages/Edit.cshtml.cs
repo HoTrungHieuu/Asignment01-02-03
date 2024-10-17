@@ -7,72 +7,85 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
+using BussinessObject.ViewModel;
+using Service.Service;
+using System.Text.Json;
+using System.Net.Http.Headers;
+using BussinessObject.UpdateModel;
 
 namespace FE.Pages
 {
     public class EditModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public EditModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public EditModel(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
-
-        [BindProperty]
-        public NewsArticle NewsArticle { get; set; } = default!;
-
+        public NewsArticleView NewsArticle { get; set; } = default!;
+        public NewsArticleUpdate NewsArticleUpdate { get; set; } = default!;
+         public List<TagView> Tags { get; set; } = new List<TagView>();
+        public List<CategoryView> Categories { get; set; } = new List<CategoryView>();
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var newsarticle =  await _context.NewsArticles.FirstOrDefaultAsync(m => m.NewsArticleId == id);
-            if (newsarticle == null)
+            var token = HttpContext.Session.GetString("Token");
+            if (!string.IsNullOrEmpty(token))
             {
-                return NotFound();
-            }
-            NewsArticle = newsarticle;
-           ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryDesciption");
-           ViewData["CreatedById"] = new SelectList(_context.SystemAccounts, "AccountId", "AccountId");
-            return Page();
-        }
-
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            _context.Attach(NewsArticle).State = EntityState.Modified;
-
-            try
+            // Fetch NewsArticle details
+            var response = await _httpClient.GetAsync($"https://localhost:7257/api/NewsArticle/ViewDetail?newsArticleId={id}");
+            if (response.IsSuccessStatusCode)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NewsArticleExists(NewsArticle.NewsArticleId))
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                if (result != null && result.Status == 200)
                 {
-                    return NotFound();
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    NewsArticle = JsonSerializer.Deserialize<NewsArticleView>(result.Data.ToString(), options);
+
+                    // Fetch Categories
+                    var categoryResponse = await _httpClient.GetAsync("https://localhost:7257/api/Category/GetAll");
+                    if (categoryResponse.IsSuccessStatusCode)
+                    {
+                        var categories = await categoryResponse.Content.ReadFromJsonAsync<List<CategoryView>>();
+                        Categories = categories ?? new List<CategoryView>();
+
+                        //ViewBag.Category = new SelectList(Categories, "Id", "Name", NewsArticle.Category.CategoryId);
+                    }
+
+                    // Fetch Tags
+                    var tagResponse = await _httpClient.GetAsync("https://localhost:7257/api/Tag/GetAll");
+                    if (tagResponse.IsSuccessStatusCode)
+                    {
+                        var tags = await tagResponse.Content.ReadFromJsonAsync<List<TagView>>();
+                        Tags = tags ?? new List<TagView>();
+
+                        //ViewBag.ListTags = new SelectList(Tags, "Id", "Name", NewsArticle.ListTags);
+                    }
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
+            else
+            {
+                return NotFound();
+            }
 
-            return RedirectToPage("./Index");
+            return Page();
         }
 
-        private bool NewsArticleExists(string id)
-        {
-            return _context.NewsArticles.Any(e => e.NewsArticleId == id);
-        }
     }
 }

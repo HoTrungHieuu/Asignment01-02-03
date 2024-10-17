@@ -10,6 +10,7 @@ using BussinessObject.AddModel;
 using BussinessObject.ViewModel;
 using Service.Service;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 namespace FE.Pages.Tag
 {
@@ -51,6 +52,11 @@ namespace FE.Pages.Tag
         {
             var jsonContent = JsonSerializer.Serialize(Tag);
             Console.WriteLine(jsonContent);
+            var token = HttpContext.Session.GetString("Token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
 
             var response = await _httpClient.PostAsJsonAsync("https://localhost:7257/api/Tag/Add", Tag);
 

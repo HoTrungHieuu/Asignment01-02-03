@@ -59,6 +59,7 @@ namespace Repository.Repository
         {
             try
             {
+                if (key.ListTagId == null) key.ListTagId = new();
                 var lastNewsArticle = (await GetAllAsync()).Last();
                 string newId = "1";
                 if (lastNewsArticle != null)
@@ -73,12 +74,12 @@ namespace Repository.Repository
                     CreatedDate = DateTime.Now,
                     NewsContent = key.NewsContent,
                     NewsSource = key.NewsSource,
-                    CategoryId = key.CategoryId,
+                    CategoryId = key?.CategoryId,
                     NewsStatus = true,
                     CreatedById = key.AccountId,
                 };
                 await CreateAsync(newsArticle);
-                foreach(var item in key.ListTagId)
+                foreach(var item in key?.ListTagId)
                 {
                     await newsTagRepo.CreateAsync(new()
                     {
