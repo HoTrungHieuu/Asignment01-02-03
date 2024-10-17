@@ -18,6 +18,27 @@ namespace Service.Service
         {
             accountRepository = new AccountRepository();
         }
+        public async Task<ServiceResult> ViewAllAccount()
+        {
+            try
+            {
+                var accounts = await accountRepository.GetAllAsync();
+                return new ServiceResult
+                {
+                    Status = 200,
+                    Message = "List Acdount",
+                    Data = accounts
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult
+                {
+                    Status = 501,
+                    Message = ex.ToString(),
+                };
+            }
+        }
         public async Task<ServiceResult> AccountDetail(int accountId)
         {
             try

@@ -21,6 +21,16 @@ namespace Asignment01_02_03.Controllers
         public AccountController()
         {
         }
+        [HttpGet("ViewAll")]
+        public async Task<IActionResult> AccountDetail()
+        {
+            var result = await service.ViewAllAccount();
+            if (result.Status == 200)
+            {
+                return Ok(result);
+            }
+            else return BadRequest(result);
+        }
         [HttpGet("AccountDetail")]
         public async Task<IActionResult> AccountDetail(int accountId)
         {
