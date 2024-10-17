@@ -24,7 +24,7 @@ namespace BussinessObject.ViewModel
 
         public string? NewsSource { get; set; }
 
-        public bool? NewsStatus { get; set; }
+        public string? NewsStatus { get; set; }
 
         public CategoryView? Category { get; set; }
 
@@ -44,7 +44,15 @@ namespace BussinessObject.ViewModel
             CreatedDate = key.CreatedDate;
             NewsContent = key.NewsContent;
             NewsSource = key.NewsSource;
-            NewsStatus = key.NewsStatus;
+            if ((bool)key.NewsStatus)
+            {
+                NewsStatus = "IsActive";
+            }
+            else
+            {
+                NewsStatus = "NotActive";
+            }
+            
             CreatedById = key.CreatedById;
             UpdatedById = key.UpdatedById;
             ModifiedDate = key.ModifiedDate;
