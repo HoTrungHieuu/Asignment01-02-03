@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BussinessObject.AddModel;
+using BussinessObject.UpdateModel;
+using BussinessObject.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DataAccessObject.Models;
-using BussinessObject.ViewModel;
 using Service.Service;
-using System.Text.Json;
 using System.Net.Http.Headers;
-using BussinessObject.UpdateModel;
+using System.Text.Json;
 
 namespace FE.Pages
 {
-    public class EditModel : PageModel
+    public class TextModel : PageModel
     {
         private readonly HttpClient _httpClient;
 
-        public EditModel(HttpClient httpClient)
+        public TextModel(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -88,7 +82,7 @@ namespace FE.Pages
         {
 
             var token = HttpContext.Session.GetString("Token");
-
+            
             if (!string.IsNullOrEmpty(token))
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -107,7 +101,7 @@ namespace FE.Pages
             NewsArticleUpdate.NewsContent = NewsArticle.NewsContent;
             NewsArticleUpdate.Headline = NewsArticle.Headline;
             NewsArticleUpdate.NewsSource = NewsArticle.NewsSource;
-            NewsArticleUpdate.NewsStatus = (NewsArticle.NewsStatus == "Active") ? true : false;
+            NewsArticleUpdate.NewsStatus = (NewsArticle.NewsStatus=="Active")?true:false;
             NewsArticleUpdate.CategoryId = NewsArticle.Category.CategoryId;
 
             var updateResponse = await _httpClient.PutAsJsonAsync("https://localhost:7257/api/NewsArticle/Update", NewsArticleUpdate);
