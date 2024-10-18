@@ -114,7 +114,6 @@ namespace FE.Pages
 
             if (updateResponse.IsSuccessStatusCode)
             {
-                // Redirect to a success page or the list page
                 return RedirectToPage("./NewArtical");
             }
 

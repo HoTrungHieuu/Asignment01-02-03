@@ -8,71 +8,74 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
 using BussinessObject.AddModel;
+using BussinessObject.UpdateModel;
+using BussinessObject.ViewModel;
+using Service.Service;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace FE.Pages.Category
 {
     public class EditModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public EditModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public EditModel(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
 
         [BindProperty]
-        public CategoryAdd Category { get; set; } = default!;
+        public CategoryView Category { get; set; } = new CategoryView();
 
-        public async Task<IActionResult> OnGetAsync(short? id)
+        [BindProperty]
+        public CategoryUpdate CategoryUpdate { get; set; } = new CategoryUpdate();
+
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var category =  await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
+            var response = await _httpClient.GetAsync($"https://localhost:7257/api/Category/ViewDetail?CategoryId={id}");
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                if (result != null && result.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    Category = JsonSerializer.Deserialize<CategoryView>(result.Data.ToString(), options);
+                }
             }
-/*            Category = category;
-*/           ViewData["ParentCategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryDesciption");
             return Page();
         }
-
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            var token = HttpContext.Session.GetString("Token");
+
+            if (!string.IsNullOrEmpty(token))
             {
-                return Page();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            CategoryUpdate.Id = Category.CategoryId;
+            CategoryUpdate.CategoryName = Category.CategoryName;
+            CategoryUpdate.CategoryDesciption = Category.CategoryDesciption;
+            CategoryUpdate.IsActive = Category.IsActive;
+
+            var updateResponse = await _httpClient.PutAsJsonAsync("https://localhost:7257/api/Category/Update", CategoryUpdate);
+
+            if (updateResponse.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
             }
 
-            _context.Attach(Category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-               /* if (!CategoryExists(Category.CategoryId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }*/
-            }
-
-            return RedirectToPage("./Index");
-        }
-
-        private bool CategoryExists(short id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
+            ModelState.AddModelError(string.Empty, "An error occurred while updating the news article.");
+            return Page();
         }
     }
 }

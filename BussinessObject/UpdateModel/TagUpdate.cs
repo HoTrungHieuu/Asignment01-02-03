@@ -10,7 +10,7 @@ namespace BussinessObject.UpdateModel
     public class TagUpdate
     {
         [Required]
-        public string? Id {  get; set; }
+        public int? Id {  get; set; }
         [Required]
         public string? Name { get; set; }
         [Required]

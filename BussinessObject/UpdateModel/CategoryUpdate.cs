@@ -10,7 +10,7 @@ namespace BussinessObject.UpdateModel
     public class CategoryUpdate
     {
         [Required]
-        public int Id { get; set; }
+        public short Id { get; set; }
         [Required]
         public string CategoryName { get; set; }
         [Required]

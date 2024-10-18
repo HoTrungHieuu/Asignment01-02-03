@@ -7,70 +7,73 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
+using BussinessObject.UpdateModel;
+using BussinessObject.ViewModel;
+using Service.Service;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace FE.Pages.Account
 {
     public class EditModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public EditModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public EditModel(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
 
         [BindProperty]
-        public SystemAccount SystemAccount { get; set; } = default!;
+        public SystemAccount SystemAccount { get; set; } = new SystemAccount();
 
-        public async Task<IActionResult> OnGetAsync(short? id)
+        [BindProperty]
+        public AccountUpdate accountUpdate { get; set; } = new AccountUpdate();
+
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var systemaccount =  await _context.SystemAccounts.FirstOrDefaultAsync(m => m.AccountId == id);
-            if (systemaccount == null)
+            var response = await _httpClient.GetAsync($"https://localhost:7257/api/Account/AccountDetail?accountId={id}");
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                if (result != null && result.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    SystemAccount = JsonSerializer.Deserialize<SystemAccount>(result.Data.ToString(), options);
+                }
             }
-            SystemAccount = systemaccount;
             return Page();
         }
-
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            var token = HttpContext.Session.GetString("Token");
+
+            if (!string.IsNullOrEmpty(token))
             {
-                return Page();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            accountUpdate.Id = SystemAccount.AccountId;
+            accountUpdate.AccountName = SystemAccount.AccountName;
+            accountUpdate.Password = SystemAccount.AccountPassword;
+
+            var updateResponse = await _httpClient.PutAsJsonAsync("https://localhost:7257/api/Account/Update", accountUpdate);
+
+            if (updateResponse.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
             }
 
-            _context.Attach(SystemAccount).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SystemAccountExists(SystemAccount.AccountId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
-        }
-
-        private bool SystemAccountExists(short id)
-        {
-            return _context.SystemAccounts.Any(e => e.AccountId == id);
+            ModelState.AddModelError(string.Empty, "An error occurred while updating the news article.");
+            return Page();
         }
     }
 }
