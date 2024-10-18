@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BussinessObject.ViewModel;
+using BussinessObject.AddModel;
 
 namespace Asignment01_02_03.Controllers
 {
@@ -98,9 +99,9 @@ namespace Asignment01_02_03.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(string email, string password, int role)
+        public async Task<IActionResult> Create(AccountAdd key)
         {
-            var result = await service.CreateAccount(email, password,role);
+            var result = await service.CreateAccount(key);
             if (result.Status == 200)
             {
                 return Ok(result);

@@ -1,4 +1,5 @@
-﻿using BussinessObject.UpdateModel;
+﻿using BussinessObject.AddModel;
+using BussinessObject.UpdateModel;
 using DataAccessObject.Models;
 using Repository.IRepository;
 using Repository.Repository;
@@ -126,11 +127,11 @@ namespace Service.Service
                 };
             }
         }
-        public async Task<ServiceResult> CreateAccount(string email, string password, int role)
+        public async Task<ServiceResult> CreateAccount(AccountAdd key)
         {
             try
             {
-                var account = await accountRepository.CreateAccount(email, password, role);
+                var account = await accountRepository.CreateAccount(key.Email,key.Password,key.Role);
                 if (account == null)
                 {
                     return new ServiceResult
