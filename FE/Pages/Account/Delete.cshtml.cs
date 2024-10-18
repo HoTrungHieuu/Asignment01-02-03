@@ -6,57 +6,89 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
+using BussinessObject.ViewModel;
+using Service.Service;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace FE.Pages.Account
 {
     public class DeleteModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public DeleteModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public DeleteModel(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
 
-        [BindProperty]
         public SystemAccount SystemAccount { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(short? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var systemaccount = await _context.SystemAccounts.FirstOrDefaultAsync(m => m.AccountId == id);
+            var token = HttpContext.Session.GetString("Token"); 
 
-            if (systemaccount == null)
+            if (!string.IsNullOrEmpty(token))
             {
-                return NotFound();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await _httpClient.GetAsync($"https://localhost:7257/api/Account/AccountDetail?accountId={id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<ServiceResult>();
+                if (result != null && result.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    SystemAccount = JsonSerializer.Deserialize<SystemAccount>(result.Data.ToString(), options);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
             else
             {
-                SystemAccount = systemaccount;
+                return NotFound();
             }
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(short? id)
+        public async Task<IActionResult> OnPostAsync(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var systemaccount = await _context.SystemAccounts.FindAsync(id);
-            if (systemaccount != null)
+            var token = HttpContext.Session.GetString("Token");
+
+            if (!string.IsNullOrEmpty(token))
             {
-                SystemAccount = systemaccount;
-                _context.SystemAccounts.Remove(SystemAccount);
-                await _context.SaveChangesAsync();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            return RedirectToPage("./Index");
+            short idTemp = short.Parse(id);
+            var response = await _httpClient.DeleteAsync($"https://localhost:7257/api/Account/Delete?accountId={id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error deleting the category."); // Cập nhật thông báo lỗi
+                return Page();
+            }
         }
     }
 }

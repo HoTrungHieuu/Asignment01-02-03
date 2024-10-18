@@ -6,39 +6,71 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataAccessObject.Models;
+using BussinessObject.AddModel;
+using BussinessObject.ViewModel;
+using Service.Service;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace FE.Pages.Account
 {
     public class CreateModel : PageModel
     {
-        private readonly DataAccessObject.Models.FUNewsManagementFall2024Context _context;
+        private readonly HttpClient _httpClient;
 
-        public CreateModel(DataAccessObject.Models.FUNewsManagementFall2024Context context)
+        public CreateModel(HttpClient httpClient)
         {
-            _context = context;
-        }
-
-
-        public IActionResult OnGet()
-        {
-            return Page();
+            _httpClient = httpClient;
         }
 
         [BindProperty]
-        public SystemAccount SystemAccount { get; set; } = default!;
+        public AccountAdd SystemAccount { get; set; } = new AccountAdd();
+        public List<AccountView> Account { get; set; } = new List<AccountView>();
+        public async Task OnGetAsync()
+        {
+            await LoadCategoriesAsync();
+        }
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
+        private async Task LoadCategoriesAsync()
+        {
+            var tagResponse = await _httpClient.GetAsync("https://localhost:7257/api/Account/ViewAll");
+            if (tagResponse.IsSuccessStatusCode)
+            {
+                var tagResult = await tagResponse.Content.ReadFromJsonAsync<ServiceResult>();
+                if (tagResult != null && tagResult.Status == 200)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    Account = JsonSerializer.Deserialize<List<AccountView>>(tagResult.Data.ToString(), options);
+                }
+            }
+        }
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+
+            var token = HttpContext.Session.GetString("Token");
+
+            if (!string.IsNullOrEmpty(token))
             {
-                return Page();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            var jsonContent = JsonSerializer.Serialize(SystemAccount);
+            Console.WriteLine(jsonContent);
+
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:7257/api/Account/Create", SystemAccount);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("Index");
             }
 
-            _context.SystemAccounts.Add(SystemAccount);
-            await _context.SaveChangesAsync();
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {errorMessage}");
 
-            return RedirectToPage("./Index");
+            return Page();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Asignment01_02_03.Controllers
         public AccountController()
         {
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet("ViewAll")]
         public async Task<IActionResult> AccountDetail()
         {

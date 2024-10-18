@@ -1,15 +1,15 @@
- using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using DataAccessObject.Models;
 using BussinessObject.ViewModel;
-using Service.Service;
 using System.Text.Json;
-
+using Service.Service;
 
 namespace FE.Pages
 {
@@ -21,10 +21,18 @@ namespace FE.Pages
         {
             _httpClient = httpClient;
         }
+
         public List<NewsArticleView> ArticleViews { get; set; } = new List<NewsArticleView>();
+
+        [BindProperty(SupportsGet = true)]
+        public string SearchTitle { get; set; } 
+
+        public int AccountId { get; set; }
 
         public async Task OnGetAsync()
         {
+            AccountId = Convert.ToInt32(HttpContext.Session.GetString("AccountId") ?? "0");
+
             var response = await _httpClient.GetAsync("https://localhost:7257/api/NewsArticle/ViewAll");
             if (response.IsSuccessStatusCode)
             {
@@ -36,7 +44,18 @@ namespace FE.Pages
                         PropertyNameCaseInsensitive = true
                     };
 
-                    ArticleViews = JsonSerializer.Deserialize<List<NewsArticleView>>(result.Data.ToString(), options);
+                    var allArticles = JsonSerializer.Deserialize<List<NewsArticleView>>(result.Data.ToString(), options);
+
+                    if (!string.IsNullOrEmpty(SearchTitle))
+                    {
+                        ArticleViews = allArticles
+                            .Where(article => article.NewsTitle.Contains(SearchTitle, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                    }
+                    else
+                    {
+                        ArticleViews = allArticles;
+                    }
                 }
             }
         }
