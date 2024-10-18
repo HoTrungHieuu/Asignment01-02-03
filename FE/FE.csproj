@@ -20,4 +20,19 @@
     <ProjectReference Include="..\DataAccessObject\DataAccessObject.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="BussinessObject">
+      <HintPath>..\Service\bin\Debug\net8.0\BussinessObject.dll</HintPath>
+    </Reference>
+    <Reference Include="DataAccessObject">
+      <HintPath>..\Service\bin\Debug\net8.0\DataAccessObject.dll</HintPath>
+    </Reference>
+    <Reference Include="Repository">
+      <HintPath>..\Service\bin\Debug\net8.0\Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="Service">
+      <HintPath>..\Service\bin\Debug\net8.0\Service.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

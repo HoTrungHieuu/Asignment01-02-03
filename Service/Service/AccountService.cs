@@ -185,5 +185,34 @@ namespace Service.Service
                 };
             }
         }
+        public async Task<ServiceResult> DeleteAccount(int accountId)
+        {
+            try
+            {
+                var account = accountRepository.GetById((short)accountId);
+                if (account == null)
+                {
+                    return new ServiceResult
+                    {
+                        Status = 404,
+                        Message = "Account Not Found",
+                    };
+                }
+                await accountRepository.RemoveAsync(account);
+                return new ServiceResult
+                {
+                    Status = 200,
+                    Message = "Delete Success",
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult
+                {
+                    Status = 501,
+                    Message = ex.ToString(),
+                };
+            }
+        }
     }
 }

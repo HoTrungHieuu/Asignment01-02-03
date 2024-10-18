@@ -17,5 +17,6 @@ namespace Service.IService
         public Task<ServiceResult> Register(string email, string password);
         public Task<ServiceResult> CreateAccount(AccountAdd key);
         public Task<ServiceResult> UpdateAccount(AccountUpdate key);
+        public Task<ServiceResult> DeleteAccount(int accountId);
     }
 }

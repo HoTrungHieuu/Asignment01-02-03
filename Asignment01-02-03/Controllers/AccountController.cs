@@ -119,5 +119,16 @@ namespace Asignment01_02_03.Controllers
             }
             else return BadRequest(result);
         }
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(int accountId)
+        {
+            var result = await service.DeleteAccount(accountId);
+            if (result.Status == 200)
+            {
+                return Ok(result);
+            }
+            else return BadRequest(result);
+        }
     }
 }
