@@ -51,6 +51,7 @@ namespace Repository.Repository
                     AccountPassword = password,
                     AccountRole = role
                 };
+                await CreateAsync(account);
                 return account;
             }
             catch (Exception)
@@ -63,7 +64,7 @@ namespace Repository.Repository
             try
             {
                 var account = (await GetAllAsync()).SingleOrDefault(l => l.AccountId == key.Id);
-                if (account != null) return null;
+                if (account == null) return null;
                 account.AccountName = key.AccountName;
                 account.AccountPassword = key.Password;
                 await UpdateAsync(account);

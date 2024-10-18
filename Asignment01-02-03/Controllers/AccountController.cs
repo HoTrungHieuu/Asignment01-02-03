@@ -108,10 +108,10 @@ namespace Asignment01_02_03.Controllers
             else return BadRequest(result);
         }
         [Authorize(Roles = "Staf")]
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public async Task<IActionResult> Update(AccountUpdate key)
         {
-            var result = await service.UpdateAccount(key);
+             var result = await service.UpdateAccount(key);
             if (result.Status == 200)
             {
                 return Ok(result);
